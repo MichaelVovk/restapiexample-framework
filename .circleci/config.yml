@@ -1,27 +1,44 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+executors:
+  maven-executor:
+    docker:
+      - image: circleci/openjdk:18
+
 jobs:
-  test:
+  build-and-test:
+    executor: maven-executor
     steps:
       - checkout
-      - run: mvn dependency:go-offline
-      - run: mvn test allure:report
+
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
       - run:
-          name: Save test results
+          name: Set up JDK 18
           command: |
-            mkdir -p ~/test-results/testng/
-            find . -type f -regex ".*/target/surefire-reports/TEST-TestSuite.xml" -exec cp {} ~/test-results/testng/ \;
-          when: always
+            sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-18.0.1/bin/java 1
+            sudo update-alternatives --set java /usr/lib/jvm/jdk-18.0.1/bin/java
+
+      - run:
+          name: Build and test
+          command: mvn clean test
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+
       - store_artifacts:
-          path: target/surefire-reports/html
-          destination: HTML report
+          path: target/surefire-reports
+          destination: surefire-reports
 
-    docker:
-      - image: cimg/openjdk:18.0
+      - store_artifacts:
+          path: target/allure-results
+          destination: allure-results
+
 workflows:
-
-  welcome:
-
+  version: 2
+  build-and-test:
     jobs:
-      - test
+      - build-and-test
