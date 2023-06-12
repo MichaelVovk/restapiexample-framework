@@ -15,12 +15,6 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       - run:
-          name: Set up JDK 18
-          command: |
-            sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-18.0.1/bin/java 1
-            sudo update-alternatives --set java /usr/lib/jvm/jdk-18.0.1/bin/java
-
-      - run:
           name: Build and test
           command: mvn clean test
 
