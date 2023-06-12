@@ -18,7 +18,7 @@ jobs:
           destination: HTML report
 
     docker:
-      - image: cimg/openjdk:15.0
+      - image: cimg/openjdk:18.0
 workflows:
 
   welcome:
