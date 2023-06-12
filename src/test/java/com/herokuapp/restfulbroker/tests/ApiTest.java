@@ -44,94 +44,31 @@ class ApiTest extends BaseTest {
         BookingRequestDto bookingRequestDto = createBookingRequestDto();
         int id = bookingApi.createBooking(bookingRequestDto).as(BookingResponseDto.class)
                 .getBookingId();
-        Response response = bookingApi.getBookings(Map.of());
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be present in the response")
-                .isTrue();
+        assertBookingIdExists(id, Map.of());
     }
 
     @Test
     void testGetBookingIdsByOneParamReturns200() {
         BookingRequestDto bookingRequestDto = createBookingRequestDto();
-        int id = bookingApi.createBooking(bookingRequestDto)
-                .as(BookingResponseDto.class)
-                .getBookingId();
+        int id = createBookingAndGetId(bookingRequestDto);
 
-        Response response = bookingApi.getBookings(Map.of(FIRSTNAME, bookingRequestDto.getFirstName()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
-        response = bookingApi.getBookings(Map.of(LASTNAME, bookingRequestDto.getLastName()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
-        response = bookingApi.getBookings(Map.of(CHECKIN, bookingRequestDto.getBookingDatesDto().getCheckIn()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
-        response = bookingApi.getBookings(Map.of(CHECKOUT, bookingRequestDto.getBookingDatesDto().getCheckOut()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
+        assertBookingIdExists(id, Map.of(FIRSTNAME, bookingRequestDto.getFirstName()));
+        assertBookingIdExists(id, Map.of(LASTNAME, bookingRequestDto.getLastName()));
+        assertBookingIdExists(id, Map.of(CHECKIN, bookingRequestDto.getBookingDatesDto().getCheckIn()));
+        assertBookingIdExists(id, Map.of(CHECKOUT, bookingRequestDto.getBookingDatesDto().getCheckOut()));
     }
 
     @Test
     void testGetBookingIdsByTwoParamsReturns200() {
         BookingRequestDto bookingRequestDto = createBookingRequestDto();
-        int id = bookingApi.createBooking(bookingRequestDto)
-                .as(BookingResponseDto.class)
-                .getBookingId();
+        int id = createBookingAndGetId(bookingRequestDto);
 
-        Response response = bookingApi.getBookings(Map.of(FIRSTNAME, bookingRequestDto.getFirstName(),
+        assertBookingIdExists(id, Map.of(FIRSTNAME, bookingRequestDto.getFirstName(),
                 LASTNAME, bookingRequestDto.getLastName()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
-
-        response = bookingApi.getBookings(Map.of(CHECKIN, bookingRequestDto.getBookingDatesDto().getCheckIn(),
+        assertBookingIdExists(id, Map.of(CHECKIN, bookingRequestDto.getBookingDatesDto().getCheckIn(),
                 CHECKOUT, bookingRequestDto.getBookingDatesDto().getCheckOut()));
-
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
-
-        response = bookingApi.getBookings(Map.of(CHECKOUT, bookingRequestDto.getBookingDatesDto().getCheckOut(),
+        assertBookingIdExists(id, Map.of(CHECKOUT, bookingRequestDto.getBookingDatesDto().getCheckOut(),
                 FIRSTNAME, bookingRequestDto.getFirstName()));
-        Assertions.assertThat(response.statusCode())
-                .as("Response status code should be 200")
-                .isEqualTo(SC_OK);
-        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
-                        .anyMatch(booking -> booking.getBookingId() == id))
-                .as("Booking ID should be in the query results")
-                .isTrue();
     }
 
     @Test
@@ -157,9 +94,7 @@ class ApiTest extends BaseTest {
     @Test
     void testUpdateBookingReturns200() {
         BookingRequestDto bookingRequestDto = createBookingRequestDto();
-        int id = bookingApi.createBooking(bookingRequestDto)
-                .as(BookingResponseDto.class)
-                .getBookingId();
+        int id = createBookingAndGetId(bookingRequestDto);
         Response response = bookingApi.partialUpdateBooking(BookingRequestDto.builder().totalPrice(-9999999).build(), id, token);
         Assertions.assertThat(response.statusCode())
                 .as("Response status code should be 200")
@@ -213,9 +148,7 @@ class ApiTest extends BaseTest {
     @Test
     void testDeleteBookingReturns201() {
         BookingRequestDto bookingRequestDto = createBookingRequestDto();
-        int id = bookingApi.createBooking(bookingRequestDto)
-                .as(BookingResponseDto.class)
-                .getBookingId();
+        int id = createBookingAndGetId(bookingRequestDto);
         Response response = bookingApi.deleteBooking(id, token);
         Assertions.assertThat(response.statusCode()).isEqualTo(SC_CREATED);
         response = bookingApi.getBookingById(id);
@@ -231,4 +164,21 @@ class ApiTest extends BaseTest {
 
     // TODO add xml body tests
     // TODO test BasicAuth
+    private int createBookingAndGetId(BookingRequestDto bookingRequestDto) {
+        return bookingApi.createBooking(bookingRequestDto)
+                .as(BookingResponseDto.class)
+                .getBookingId();
+    }
+
+    private void assertBookingIdExists(int expectedId, Map<String, String> queryParams) {
+        Response response = bookingApi.getBookings(queryParams);
+
+        Assertions.assertThat(response.statusCode())
+                .as("Response status code should be 200")
+                .isEqualTo(SC_OK);
+        Assertions.assertThat(Arrays.stream(response.body().as(BookingResponseDto[].class))
+                        .anyMatch(booking -> booking.getBookingId() == expectedId))
+                .as("Booking ID should be in the query results")
+                .isTrue();
+    }
 }

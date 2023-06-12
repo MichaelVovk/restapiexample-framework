@@ -18,7 +18,7 @@ import static com.herokuapp.restfulbroker.Services.BOOKING;
 public final class BookingApi {
     private static final String MEDIA_TYPE_JSON = "application/json";
 
-    private RequestSpecification requestSender() {
+    private RequestSpecification send() {
         return given(new RequestSpecBuilder()
                 .setBaseUri(AuthApi.BASE_URL)
                 .setContentType(ContentType.JSON)
@@ -29,27 +29,27 @@ public final class BookingApi {
                 .addFilter(new ResponseLoggingFilter())
                 .build());
     }
-    @Step("get booking id")
+    @Step("get booking by id")
     public Response getBookingById(int id) {
-        return requestSender().get("/" + id);
+        return send().get("/" + id);
     }
     @Step("create booking")
     public Response createBooking(BookingRequestDto bookingRequestDto) {
-        return requestSender().body(bookingRequestDto).post();
+        return send().body(bookingRequestDto).post();
     }
     @Step("update booking")
     public Response partialUpdateBooking(BookingRequestDto bookingRequestDto, int id, String tokenValue) {
-        return requestSender().header("Cookie", "token=" + tokenValue).body(bookingRequestDto).patch("/" + id);
+        return send().header("Cookie", "token=" + tokenValue).body(bookingRequestDto).patch("/" + id);
     }
 
-    @Step("get booking request")
+    @Step("get bookings")
     public Response getBookings(Map<String, ?> params) {
-        return requestSender().params(params).get();
+        return send().params(params).get();
     }
 
-    @Step("delete booking request")
+    @Step("delete booking")
     public Response deleteBooking(int id, String authToken) {
-        return requestSender().header("Cookie", "token=" + authToken)
+        return send().header("Cookie", "token=" + authToken)
                 .delete("/" + id);
     }
 }
