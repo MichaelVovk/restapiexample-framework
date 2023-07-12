@@ -1,6 +1,6 @@
 RestApiExample API Test Framework
 
-[![CircleCI](https://circleci.com/gh/MichaelVovk/restful-booker-test-framework/tree/main.svg?style=shield)](https://circleci.com/gh/MichaelVovk/restful-booker-test-framework/tree/main)
+[![CircleCI](https://circleci.com/gh/MichaelVovk/restapiexample-framework/tree/main.svg?style=shield)](https://circleci.com/gh/MichaelVovk/restapiexample-framework/tree/main)
 
 Technical stack
 
