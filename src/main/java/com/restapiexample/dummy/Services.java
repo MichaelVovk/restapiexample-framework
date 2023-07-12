@@ -1,9 +1,10 @@
-package com.herokuapp.restfulbroker;
+package com.restapiexample.dummy;
 
 public enum Services {
-
-    BOOKING("booking"),
-    AUTH ("auth/");
+    EMPLOYEE("employee/"),
+    EMPLOYEES("employees"),
+    CREATE_EMPLOYEE("create"),
+    DELETE_EMPLOYEE("delete/");
     private final String service;
 
     Services(String service) {

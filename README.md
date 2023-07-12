@@ -1,4 +1,4 @@
-Restful-booker API Test Framework
+RestApiExample API Test Framework
 
 [![CircleCI](https://circleci.com/gh/MichaelVovk/restful-booker-test-framework/tree/main.svg?style=shield)](https://circleci.com/gh/MichaelVovk/restful-booker-test-framework/tree/main)
 
@@ -10,10 +10,9 @@ Build : Maven
 
 Testing : JUnit
 
-Api Framework : REST Assured
+Api Framework : Apache HTTP client
 
 Reporter : Allure
 
 How to run
 mvn clean test allure:serve
-

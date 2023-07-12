@@ -1,4 +1,4 @@
-package com.herokuapp.restfulbroker.models.auth;
+package com.restapiexample.dummy.models.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
